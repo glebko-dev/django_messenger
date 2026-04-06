@@ -9,24 +9,26 @@
     <title>Вход</title>
 </head>
 <body class="form-container">
-    <form class="auth-form">
+    <form method="POST" action="{% url 'sign_in' %}" class="auth-form">
+        {% csrf_token %}
+
         <h1>Вход</h1>
 
         <div class="inputs-div">
             <div class="input-wrapper">
-                <input type="text" id="login-field" placeholder="Введите логин">
-                <label for="login-field" class="input-label required">Логин</label>
+                {{ form.username }}
+                <label for="login-field" class="input-label required">{{ form.username.label }}</label>
             </div>
 
             <div class="input-wrapper">
-                <input type="password" id="password-field" placeholder="Введите пароль">
-                <label for="password-field" class="input-label required">Пароль</label>
+                {{ form.password }}
+                <label for="password-field" class="input-label required">{{ form.password.label }}</label>
             </div>
         </div>
 
         <div class="form-footer">
             <p class="auth-link">Ещё нет аккаунта? <a href="{% url 'sign_up' %}">Зарегистрироваться </a></p>
-    
+
             <button type="submit" class="submit-button">Войти</button>
         </div>
     </form>

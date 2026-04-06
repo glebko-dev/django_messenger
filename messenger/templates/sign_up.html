@@ -9,30 +9,34 @@
     <title>Регистрация</title>
 </head>
 <body class="form-container">
-    <form class="auth-form">
+    <form method="POST" action="{% url 'sign_up' %}" class="auth-form">
+        {% csrf_token %}
+
         <h1>Регистрация</h1>
 
         <div class="inputs-div">
             <div class="input-wrapper">
-                <input type="text" id="login-field" placeholder="Введите логин">
-                <label for="login-field" class="input-label required">Логин</label>
+                {{ form.username }}
+                <label for="login-field" class="input-label required">{{ form.username.label }}</label>
             </div>
 
             <div class="input-wrapper">
-                <input type="password" id="email-field" placeholder="Введите почту">
-                <label for="password-field" class="input-label">Почта</label>
+                {{ form.email }}
+                <label for="email-field" class="input-label">{{ form.email.label }}</label>
             </div>
 
             <div class="input-wrapper">
-                <input type="password" id="password-field-1" placeholder="Введите пароль">
-                <label for="password-field-1" class="input-label required">Пароль</label>
+                {{ form.password1 }}
+                <label for="password-field-1" class="input-label required">{{ form.password1.label }}</label>
             </div>
 
             <div class="input-wrapper">
-                <input type="password" id="password-field-2" placeholder="Повторите пароль">
-                <label for="password-field-2" class="input-label required">Пароль</label>
+                {{ form.password2 }}
+                <label for="password-field-2" class="input-label required">{{ form.password2.label }}</label>
             </div>
         </div>
+
+        {{ form.errors }}
 
         <div class="form-footer">
             <p class="auth-link">Уже есть аккаунт? <a href="{% url 'sign_in' %}">Войти</a></p>

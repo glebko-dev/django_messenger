@@ -13,9 +13,16 @@
         <header class="chats-header">
             <h1>Мессенджер</h1>
 
-            <form>
-                <button type="submit" class="logout-button">Выйти</button>
-            </form>
+            <div class="header-user-wrapper">
+                <div class="user-img"></div>
+                <h1>{{ user }}</h1>
+
+                <form method="POST" action="{% url 'sign_out' %}">
+                    {% csrf_token %}
+
+                    <button type="submit" class="logout-button">Выйти</button>
+                </form>
+            </div>
         </header>
 
         <div class="chats-wrapper">

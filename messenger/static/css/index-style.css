@@ -39,6 +39,7 @@ body {
     height: 100px;
 
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -129,7 +130,7 @@ body {
     padding: 10px;
 }
 
-.chat-img {
+.chat-im, .user-img {
     width: 70px;
     height: 70px;
 
@@ -234,7 +235,7 @@ body {
 }
 
 .logout-button {
-    width: 300px;
+    width: 100px;
     height: 40px;
 
     background-color: white;
@@ -253,4 +254,12 @@ body {
 .logout-button:hover {
     cursor: pointer;
     background-color: lightgray;
+}
+
+.header-user-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
 }

@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/auth-style.css' %}">
+    <title>Регистрация</title>
+</head>
+<body class="form-container">
+    <form class="auth-form">
+        <h1 class="form-label">Регистрация</h1>
+
+        <div class="inputs-div">
+            <div class="input-wrapper">
+                <input type="text" id="login-field" placeholder="Введите логин">
+                <label for="login-field" class="input-label required">Логин</label>
+            </div>
+
+            <div class="input-wrapper">
+                <input type="password" id="email-field" placeholder="Введите почту">
+                <label for="password-field" class="input-label">Почта</label>
+            </div>
+    
+            <div class="input-wrapper">
+                <input type="password" id="password-field-1" placeholder="Введите пароль">
+                <label for="password-field-1" class="input-label required">Пароль</label>
+            </div>
+
+            <div class="input-wrapper">
+                <input type="password" id="password-field-2" placeholder="Повторите пароль">
+                <label for="password-field-2" class="input-label required">Пароль</label>
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <p class="auth-link">Уже есть аккаунт? <a href="{% url 'sign_in' %}">Войти</a></p>
+    
+            <button type="submit" class="submit-button">Зарегистрироваться</button>
+        </div>
+    </form>
+</body>
+</html>

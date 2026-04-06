@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/index-style.css' %}">
+    <title>Главная</title>
+</head>
+<body>
+    <div class="container">
+        <header class="chats-header">
+            <h1>Мессенджер</h1>
+
+            <form>
+                <button type="submit" class="logout-button">Выйти</button>
+            </form>
+        </header>
+
+        <div class="chats-wrapper">
+            <div class="chats">
+                <div class="chat">
+                    <div class="chat-img"></div>
+                    <h2 class="chat-name">Чат 1</h2>
+                </div>
+
+                <div class="chat">
+                    <div class="chat-img"></div>
+                    <h2 class="chat-name">Чат 2</h2>
+                </div>
+
+                <div class="chat">
+                    <div class="chat-img"></div>
+                    <h2 class="chat-name">Чат 3</h2>
+                </div>
+            </div>
+
+            <div class="chat-wrapper">
+                <header class="chat-header">
+                    <div class="chat-img"></div>
+                    <h2 class="chat-name">Чат 1</h2>
+                </header>
+
+                <div class="active-chat">
+                    <div class="my-message-wrapper">
+                        <div class="my-message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat voluptatem necessitatibus mollitia hic commodi asperiores incidunt, quod sequi saepe provident libero neque corporis suscipit dolore sunt aliquam eius inventore quo?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus voluptas ullam, eos amet incidunt qui iste aliquam voluptates atque hic molestias vero possimus tenetur ea cum eius omnis? Mollitia, vero?Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate doloremque fugiat in numquam eligendi. Adipisci incidunt suscipit dolorum laborum ut, ducimus magnam iusto autem libero aspernatur explicabo quisquam eaque distinctio?Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam culpa enim autem labore quae corporis dolor fuga sequi porro. Vel accusantium nobis amet, iure excepturi ratione suscipit facilis quod. Excepturi?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas, numquam! Neque in fugiat illo doloremque soluta placeat ab unde, nostrum voluptatem, perferendis eaque quidem delectus nemo ad similique. Minima, soluta.</div>
+                    </div>
+
+                    <div class="other-message-wrapper">
+                        <div class="other-message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore dolores commodi provident, ab facilis reiciendis iusto, eius harum dolorum fugit officia nihil itaque, neque obcaecati velit quae dolor voluptas sint. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo numquam adipisci sed libero. Totam, magni mollitia. Ut voluptate deserunt perferendis itaque, reprehenderit nobis accusantium mollitia! Nostrum dolores voluptatem velit tempore! Lorem ipsum dolor sit amet consectetur adipisicing elit. A iusto cum cupiditate. Cum, minima ut quasi esse, adipisci id sapiente saepe ex, nisi aperiam laudantium! Aliquid possimus perferendis perspiciatis repudiandae.</div>
+                    </div>
+                </div>
+
+                <footer class="chat-footer">
+                    <form class="message-form">
+                        <input type="text" placeholder="Введите сообщение" class="message-input">
+
+                        <button type="submit" class="send-message-button">Отправить сообщение</button>
+                    </form>
+                </footer>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

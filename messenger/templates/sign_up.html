@@ -10,7 +10,7 @@
 </head>
 <body class="form-container">
     <form class="auth-form">
-        <h1 class="form-label">Регистрация</h1>
+        <h1>Регистрация</h1>
 
         <div class="inputs-div">
             <div class="input-wrapper">
@@ -22,7 +22,7 @@
                 <input type="password" id="email-field" placeholder="Введите почту">
                 <label for="password-field" class="input-label">Почта</label>
             </div>
-    
+
             <div class="input-wrapper">
                 <input type="password" id="password-field-1" placeholder="Введите пароль">
                 <label for="password-field-1" class="input-label required">Пароль</label>
@@ -36,7 +36,7 @@
 
         <div class="form-footer">
             <p class="auth-link">Уже есть аккаунт? <a href="{% url 'sign_in' %}">Войти</a></p>
-    
+
             <button type="submit" class="submit-button">Зарегистрироваться</button>
         </div>
     </form>

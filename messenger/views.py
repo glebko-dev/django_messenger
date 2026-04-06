@@ -1,3 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-# Create your views here.
+
+def index(request):
+    if request.user.is_authenticated:
+        return render(request, 'index.html')
+
+    return redirect('sign_in')
+
+
+def sign_in(request):
+    if request.method == 'POST':
+        return redirect('index')
+
+    return render(request, 'sign_in.html')
+
+
+def sign_up(request):
+    if request.method == 'POST':
+        return redirect('index')
+
+    return render(request, 'sign_up.html')

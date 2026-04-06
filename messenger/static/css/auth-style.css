@@ -1,0 +1,137 @@
+* {
+    font-family: sans-serif;
+}
+
+.form-container {
+    display: flex;
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgb(43, 108, 204);
+}
+
+.auth-form {
+    width: 400px;
+    height: 500px;
+
+    border-radius: 5px;
+
+    background-color: white;
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 25px;
+}
+
+input[type='text'], input[type='password'] {
+    width: 300px;
+    height: 40px;
+
+    font-size: 17px;
+
+    border-radius: 5px;
+
+    outline: 0;
+
+    border: 2px rgb(112, 112, 112) solid;
+
+    transition: 0.5s;
+}
+
+input[type='text']:focus, input[type='password']:focus {
+    border: 2px rgb(43, 108, 204) solid;
+}
+
+input[type='text']::placeholder, input[type='password']::placeholder {
+    color: rgb(112, 112, 112);
+}
+
+.input-label {
+    width: 55px;
+
+    font-size: 13px;
+
+    background-color: white;
+
+    color: rgb(112, 112, 112);
+
+    position: absolute;
+
+    left: 60px;
+    top: -5px;
+
+    transition: 0.5s;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+input[type='text']:focus ~ .input-label, input[type='password']:focus ~ .input-label {
+    color: rgb(43, 108, 204);
+}
+
+.inputs-div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.submit-button {
+    width: 300px;
+    height: 40px;
+
+    background-color: rgb(43, 108, 204);
+
+    border: 0;
+
+    border-radius: 5px;
+
+    outline: 0;
+
+    font-size: 17px;
+
+    color: white;
+
+    transition: 0.5s;
+}
+
+.submit-button:hover {
+    cursor: pointer;
+    background-color: rgb(26, 68, 129);
+}
+
+.required::after {
+    content: '*';
+
+    color: red;
+
+    font-weight: bold;
+}
+
+.form-footer {
+    margin: auto auto 25px auto;
+}
+
+.auth-link {
+    color: rgb(112, 112, 112);
+}
+
+.auth-link a {
+    font-weight: bold;
+
+    text-decoration: underline 2px;
+}
+
+.auth-link a:link, .auth-link a:visited {
+    color: rgb(43, 108, 204);
+}

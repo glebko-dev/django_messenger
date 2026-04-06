@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/auth-style.css' %}">
+    <title>Вход</title>
+</head>
+<body class="form-container">
+    <form class="auth-form">
+        <h1>Вход</h1>
+
+        <div class="inputs-div">
+            <div class="input-wrapper">
+                <input type="text" id="login-field" placeholder="Введите логин">
+                <label for="login-field" class="input-label required">Логин</label>
+            </div>
+
+            <div class="input-wrapper">
+                <input type="password" id="password-field" placeholder="Введите пароль">
+                <label for="password-field" class="input-label required">Пароль</label>
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <p class="auth-link">Ещё нет аккаунта? <a href="{% url 'sign_up' %}">Зарегистрироваться </a></p>
+    
+            <button type="submit" class="submit-button">Войти</button>
+        </div>
+    </form>
+</body>
+</html>

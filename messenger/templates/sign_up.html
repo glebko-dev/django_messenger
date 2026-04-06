@@ -9,7 +9,7 @@
     <title>Регистрация</title>
 </head>
 <body class="form-container">
-    <form method="POST" action="{% url 'sign_up' %}" class="auth-form">
+    <form method="POST" action="{% url 'sign_up' %}" class="auth-form" novalidate>
         {% csrf_token %}
 
         <h1>Регистрация</h1>
@@ -36,7 +36,25 @@
             </div>
         </div>
 
-        {{ form.errors }}
+        {% if form.errors %}
+            <div class="from-errors">
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="form-error">
+                                <h5>{{ field.label }}: {{ error }}</h5>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                {% for error in form.non_field_errors %}
+                    <div class="form-error">
+                        <h5>{{ error }}</h5>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <div class="form-footer">
             <p class="auth-link">Уже есть аккаунт? <a href="{% url 'sign_in' %}">Войти</a></p>

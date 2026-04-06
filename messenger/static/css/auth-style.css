@@ -17,7 +17,7 @@
 
 .auth-form {
     width: 400px;
-    height: 500px;
+    min-height: 500px;
 
     border-radius: 5px;
 
@@ -134,4 +134,30 @@ input[type='text']:focus ~ .input-label, input[type='password']:focus ~ .input-l
 
 .auth-link a:link, .auth-link a:visited {
     color: rgb(43, 108, 204);
+}
+
+.from-errors {
+    margin: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.form-error {
+    width: 300px;
+    min-height: 30px;
+
+    border-radius: 5px;
+
+    color: red;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid red;
 }

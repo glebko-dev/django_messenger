@@ -26,6 +26,26 @@
             </div>
         </div>
 
+        {% if form.errors %}
+            <div class="from-errors">
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="form-error">
+                                <h5>{{ field.label }}: {{ error }}</h5>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                {% for error in form.non_field_errors %}
+                    <div class="form-error">
+                        <h5>{{ error }}</h5>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="form-footer">
             <p class="auth-link">Ещё нет аккаунта? <a href="{% url 'sign_up' %}">Зарегистрироваться </a></p>
 

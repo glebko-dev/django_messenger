@@ -13,7 +13,8 @@ class SignUpForm(UserCreationForm):
     email = EmailField(
         label='Почта',
         help_text='Введите почту',
-        widget=EmailInput(attrs={'id': 'email-field', 'placeholder': 'Введите почту'})
+        widget=EmailInput(attrs={'id': 'email-field', 'placeholder': 'Введите почту'}),
+        required=False
     )
 
     password1 = CharField(

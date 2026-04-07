@@ -130,7 +130,7 @@ body {
     padding: 10px;
 }
 
-.chat-im, .user-img {
+.chat-img, .user-img {
     width: 70px;
     height: 70px;
 
@@ -171,7 +171,7 @@ body {
 }
 
 .send-message-button {
-    width: 20%;
+    min-width: 20%;
     height: 44px;
 
     background-color: white;
@@ -234,8 +234,8 @@ body {
     background-color: rgb(43, 108, 204);
 }
 
-.logout-button {
-    width: 100px;
+.logout-button, .add-chat-button {
+    min-width: 100px;
     height: 40px;
 
     background-color: white;
@@ -251,7 +251,7 @@ body {
     transition: 0.5s;
 }
 
-.logout-button:hover {
+.logout-button:hover, .add-chat-button:hover {
     cursor: pointer;
     background-color: lightgray;
 }

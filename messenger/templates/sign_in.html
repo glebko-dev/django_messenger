@@ -27,12 +27,13 @@
         </div>
 
         {% if form.errors %}
-            <div class="from-errors">
+            <div class="form-errors">
                 {% for field in form %}
                     {% if field.errors %}
                         {% for error in field.errors %}
                             <div class="form-error">
                                 <h5>{{ field.label }}: {{ error }}</h5>
+                                <label class="form-error-label">Ошибка</label>
                             </div>
                         {% endfor %}
                     {% endif %}
@@ -41,6 +42,7 @@
                 {% for error in form.non_field_errors %}
                     <div class="form-error">
                         <h5>{{ error }}</h5>
+                        <label class="form-error-label">Ошибка</label>
                     </div>
                 {% endfor %}
             </div>

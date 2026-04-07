@@ -115,6 +115,10 @@ body {
     overflow-y: auto;
 }
 
+.chat:hover {
+    cursor: pointer;
+}
+
 .active-chat {
     overflow-y: auto;
 
@@ -208,7 +212,7 @@ body {
 
 .my-message {
     width: 500px;
-    min-height: 100px;
+    min-height: 20px;
 
     color: whitesmoke;
 
@@ -229,7 +233,7 @@ body {
 
 .other-message {
     width: 500px;
-    min-height: 100px;
+    min-height: 20px;
 
     color: whitesmoke;
 
@@ -308,4 +312,44 @@ body {
     justify-content: center;
 
     gap: 20px;
+}
+
+.form-errors {
+    margin: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.form-error {
+    width: 300px;
+    min-height: 30px;
+
+    border-radius: 5px;
+
+    color: red;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid red;
+
+    position: relative;
+}
+
+.form-error-label {
+    width: 70px;
+    height: 15px;
+
+    background-color: white;
+
+    position: absolute;
+
+    top: -10px;
+    left: 10px;
 }

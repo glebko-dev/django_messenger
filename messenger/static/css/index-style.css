@@ -156,7 +156,7 @@ body {
     gap: 5px;
 }
 
-.message-input {
+.message-input, .add-chat-input {
     width: 80%;
     height: 40px;
 
@@ -168,6 +168,12 @@ body {
     outline: 0;
 
     background-color: white;
+}
+
+.add-chat-input {
+    width: 300px;
+
+    border: 2px solid lightgray;
 }
 
 .send-message-button {
@@ -234,7 +240,7 @@ body {
     background-color: rgb(43, 108, 204);
 }
 
-.logout-button, .add-chat-button {
+.logout-button, .add-chat-button-open, .add-chat-button {
     min-width: 100px;
     height: 40px;
 
@@ -251,7 +257,13 @@ body {
     transition: 0.5s;
 }
 
-.logout-button:hover, .add-chat-button:hover {
+.add-chat-button {
+    width: 308px;
+
+    border: 2px solid lightgray;
+}
+
+.logout-button:hover, .add-chat-button-open:hover, .add-chat-button:hover {
     cursor: pointer;
     background-color: lightgray;
 }
@@ -262,4 +274,38 @@ body {
     align-items: center;
 
     gap: 15px;
+}
+
+.add-chat {
+    width: 400px;
+    height: 200px;
+
+    margin: auto;
+
+    background-color: white;
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 1;
+
+    border-radius: 5px;
+}
+
+.add-chat-form {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
 }

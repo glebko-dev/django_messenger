@@ -10,6 +10,14 @@
 </head>
 <body>
     <div class="container">
+        <div class="add-chat" id="addChatPopUp" style="display: none;">
+            <form class="add-chat-form">
+                <input type="text" class="add-chat-input" placeholder="Введите имя пользователя">
+
+                <button type="submit" class="add-chat-button">Добавить чат</button>
+            </form>
+        </div>
+
         <header class="chats-header">
             <h1>Мессенджер</h1>
 
@@ -23,7 +31,7 @@
                     <button type="submit" class="logout-button">Выйти</button>
                 </form>
 
-                <button class="add-chat-button">Добавить чат</button>
+                <button class="add-chat-button-open" id="addChatButton">Добавить чат</button>
             </div>
         </header>
 
@@ -72,4 +80,5 @@
         </div>
     </div>
 </body>
+<script src="{% static 'js/index-script.js' %}"></script>
 </html>

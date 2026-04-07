@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 
-from messenger.forms import SignUpForm, SignInForm
+from messenger.forms import SignUpForm, SignInForm, SendMessageForm, AddChatForm
 
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, 'index.html')
+        context = {
+            'send_message_form': SendMessageForm,
+            'add_chat_form': AddChatForm
+        }
+
+        return render(request, 'index.html', context)
 
     return redirect('sign_in')
 

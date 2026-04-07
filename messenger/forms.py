@@ -1,4 +1,4 @@
-from django.forms import CharField, TextInput, PasswordInput, EmailField, EmailInput
+from django.forms import CharField, Form, TextInput, PasswordInput, EmailField, EmailInput, HiddenInput
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 
@@ -45,4 +45,24 @@ class SignInForm(AuthenticationForm):
         label='Пароль',
         help_text='Введите пароль',
         widget=PasswordInput(attrs={'id': 'password-field', 'placeholder': 'Введите пароль'})
+    )
+
+
+class SendMessageForm(Form):
+    username = CharField(
+        widget=HiddenInput()
+    )
+
+    message = CharField(
+        label='Сообщение',
+        help_text='Введите сообщение',
+        widget=TextInput(attrs={'class': 'message-input', 'placeholder': 'Введите сообщение'})
+    )
+
+
+class AddChatForm(Form):
+    username = CharField(
+        label='Имя пользователя',
+        help_text='Введите имя пользователя',
+        widget=TextInput(attrs={'class': 'add-chat-input', 'placeholder': 'Введите имя пользователя'})
     )

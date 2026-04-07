@@ -9,10 +9,36 @@
     <title>Главная</title>
 </head>
 <body>
+    {{ user.current_chat.id|json_script:"userCurrentChat" }}
+
     <div class="container">
         <div class="add-chat" id="addChatPopUp" style="display: none;">
-            <form class="add-chat-form">
-                <input type="text" class="add-chat-input" placeholder="Введите имя пользователя">
+            <form class="add-chat-form" method="POST" action="create_new_chat">
+                {% csrf_token %}
+
+                {% if add_chat_form.errors %}
+                    <div class="form-errors">
+                        {% for field in add_chat_form %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="form-error">
+                                        <h5>{{ field.label }}: {{ error }}</h5>
+                                        <label class="form-error-label">Ошибка</label>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for error in add_chat_form.non_field_errors %}
+                            <div class="form-error">
+                                <h5>{{ error }}</h5>
+                                <label class="form-error-label">Ошибка</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {{ add_chat_form.username }}
 
                 <button type="submit" class="add-chat-button">Добавить чат</button>
             </form>
@@ -23,7 +49,7 @@
 
             <div class="header-user-wrapper">
                 <div class="user-img"></div>
-                <h1>{{ user }}</h1>
+                <h1 id="currentUser">{{ user }}</h1>
 
                 <form method="POST" action="{% url 'sign_out' %}">
                     {% csrf_token %}
@@ -37,20 +63,12 @@
 
         <div class="chats-wrapper">
             <div class="chats">
-                <div class="chat">
-                    <div class="chat-img"></div>
-                    <h2 class="chat-name">Чат 1</h2>
-                </div>
-
-                <div class="chat">
-                    <div class="chat-img"></div>
-                    <h2 class="chat-name">Чат 2</h2>
-                </div>
-
-                <div class="chat">
-                    <div class="chat-img"></div>
-                    <h2 class="chat-name">Чат 3</h2>
-                </div>
+                {% for chat in chats %}
+                    <div class="chat" id="{{ chat.id }}">
+                        <div class="chat-img"></div>
+                        <h2 class="chat-name">{{ chat.name }}</h2>
+                    </div>
+                {% endfor %}
             </div>
 
             <div class="chat-wrapper">
@@ -59,19 +77,26 @@
                     <h2 class="chat-name">Чат 1</h2>
                 </header>
 
-                <div class="active-chat">
-                    <div class="my-message-wrapper">
-                        <div class="my-message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat voluptatem necessitatibus mollitia hic commodi asperiores incidunt, quod sequi saepe provident libero neque corporis suscipit dolore sunt aliquam eius inventore quo?Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus voluptas ullam, eos amet incidunt qui iste aliquam voluptates atque hic molestias vero possimus tenetur ea cum eius omnis? Mollitia, vero?Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate doloremque fugiat in numquam eligendi. Adipisci incidunt suscipit dolorum laborum ut, ducimus magnam iusto autem libero aspernatur explicabo quisquam eaque distinctio?Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam culpa enim autem labore quae corporis dolor fuga sequi porro. Vel accusantium nobis amet, iure excepturi ratione suscipit facilis quod. Excepturi?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas, numquam! Neque in fugiat illo doloremque soluta placeat ab unde, nostrum voluptatem, perferendis eaque quidem delectus nemo ad similique. Minima, soluta.</div>
-                    </div>
-
-                    <div class="other-message-wrapper">
-                        <div class="other-message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore dolores commodi provident, ab facilis reiciendis iusto, eius harum dolorum fugit officia nihil itaque, neque obcaecati velit quae dolor voluptas sint. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo numquam adipisci sed libero. Totam, magni mollitia. Ut voluptate deserunt perferendis itaque, reprehenderit nobis accusantium mollitia! Nostrum dolores voluptatem velit tempore! Lorem ipsum dolor sit amet consectetur adipisicing elit. A iusto cum cupiditate. Cum, minima ut quasi esse, adipisci id sapiente saepe ex, nisi aperiam laudantium! Aliquid possimus perferendis perspiciatis repudiandae.</div>
-                    </div>
+                <div class="active-chat" id="activeChat">
+                    {% for message in messages %}
+                        {% if message.sender == user %}
+                            <div class="my-message-wrapper">
+                                <div class="my-message">{{ message.text|safe }}</div>
+                            </div>
+                        {% else %}
+                            <div class="other-message-wrapper">
+                                <div class="other-message">{{ message.text|safe }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
 
                 <footer class="chat-footer">
-                    <form class="message-form">
-                        <input type="text" placeholder="Введите сообщение" class="message-input">
+                    <form class="message-form" method="POST" action="send_message">
+                        {% csrf_token %}
+
+                        {{ send_message_form.chat_id }}
+                        {{ send_message_form.message }}
 
                         <button type="submit" class="send-message-button">Отправить сообщение</button>
                     </form>

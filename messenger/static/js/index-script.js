@@ -38,3 +38,82 @@ document.addEventListener('keydown', (event) => {
 });
 
 addChatButton.addEventListener('click', toggleStyles);
+
+let chats = document.querySelectorAll('.chat');
+
+let activeChat = document.getElementById('activeChat');
+let currentUser = document.getElementById('currentUser').innerHTML;
+
+let currentChatIdInput = document.getElementById('id_chat_id');
+
+let currentChatId = JSON.parse(document.getElementById('userCurrentChat').textContent).toString();
+
+let getCSRFToken = () => {
+    let csrftoken;
+    const cookieParsed = document.cookie.split("; ");
+
+    for (let i = 0; i < cookieParsed.length; i++) {
+        if (cookieParsed[i].includes("csrftoken")) {
+            csrftoken = cookieParsed[i].slice(10);
+
+            break;
+        }
+    }
+
+    return csrftoken;
+};
+
+chats.forEach((chat) => {
+    chat.addEventListener('click', () => {
+        currentChatIdInput.value = chat.id;
+
+        let csrftoken = getCSRFToken();
+
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/get_chat_messages', true);
+
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+                const response = JSON.parse(xhr.responseText);
+
+                activeChat.innerHTML = '';
+
+                response.forEach((message) => {
+                    let sender = message['sender__username'];
+                    let text = message['text'];
+
+                    let messageWrapperEl = document.createElement('div');
+                    let messageEl = document.createElement('div');
+
+                    messageWrapperEl.appendChild(messageEl);
+
+                    messageEl.innerHTML = text;
+
+                    if (currentUser == sender) {
+                        messageWrapperEl.classList.add('my-message-wrapper');
+                        messageEl.classList.add('my-message');
+                    }
+
+                    else {
+                        messageWrapperEl.classList.add('other-message-wrapper');
+                        messageEl.classList.add('other-message');
+                    }
+
+                    activeChat.appendChild(messageWrapperEl);
+                });
+            }
+        };
+
+        const data = JSON.stringify({'id': chat.id});
+
+        if (currentChatId != chat.id) {
+            currentChatId = chat.id;
+
+            xhr.send(data);
+        }
+    });
+});

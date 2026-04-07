@@ -136,7 +136,7 @@ input[type='text']:focus ~ .input-label, input[type='password']:focus ~ .input-l
     color: rgb(43, 108, 204);
 }
 
-.from-errors {
+.form-errors {
     margin: auto;
 
     display: flex;
@@ -160,4 +160,18 @@ input[type='text']:focus ~ .input-label, input[type='password']:focus ~ .input-l
     justify-content: center;
 
     border: 2px solid red;
+
+    position: relative;
+}
+
+.form-error-label {
+    width: 70px;
+    height: 15px;
+
+    background-color: white;
+
+    position: absolute;
+
+    top: -10px;
+    left: 10px;
 }

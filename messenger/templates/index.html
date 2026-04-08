@@ -13,36 +13,6 @@
 
     <div class="container">
         <div class="add-chat" id="addChatPopUp" style="display: none;">
-            <!-- <form class="add-chat-form" method="POST" action="create_new_chat">
-                {% csrf_token %}
-
-                {% if add_chat_form.errors %}
-                    <div class="form-errors">
-                        {% for field in add_chat_form %}
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <div class="form-error">
-                                        <h5>{{ field.label }}: {{ error }}</h5>
-                                        <label class="form-error-label">Ошибка</label>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endfor %}
-
-                        {% for error in add_chat_form.non_field_errors %}
-                            <div class="form-error">
-                                <h5>{{ error }}</h5>
-                                <label class="form-error-label">Ошибка</label>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                {{ add_chat_form.username }}
-
-                <button type="submit" class="add-chat-button">Добавить чат</button>
-            </form> -->
-
             <div class="add-chat-form">
                 <input type="text" class="add-chat-input" placeholder="Введите имя пользователя" id="usernameToAdd">
 

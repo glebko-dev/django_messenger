@@ -13,7 +13,7 @@
 
     <div class="container">
         <div class="add-chat" id="addChatPopUp" style="display: none;">
-            <form class="add-chat-form" method="POST" action="create_new_chat">
+            <!-- <form class="add-chat-form" method="POST" action="create_new_chat">
                 {% csrf_token %}
 
                 {% if add_chat_form.errors %}
@@ -41,7 +41,13 @@
                 {{ add_chat_form.username }}
 
                 <button type="submit" class="add-chat-button">Добавить чат</button>
-            </form>
+            </form> -->
+
+            <div class="add-chat-form">
+                <input type="text" class="add-chat-input" placeholder="Введите имя пользователя" id="usernameToAdd">
+
+                <button class="add-chat-button" id="addChatButton">Добавить чат</button>
+            </div>
         </div>
 
         <header class="chats-header">
@@ -57,12 +63,12 @@
                     <button type="submit" class="logout-button">Выйти</button>
                 </form>
 
-                <button class="add-chat-button-open" id="addChatButton">Добавить чат</button>
+                <button class="add-chat-button-open" id="addChatButtonOpen">Добавить чат</button>
             </div>
         </header>
 
         <div class="chats-wrapper">
-            <div class="chats">
+            <div class="chats" id="chats">
                 {% for chat in chats %}
                     <div class="chat" id="{{ chat.id }}">
                         <div class="chat-img"></div>

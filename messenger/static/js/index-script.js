@@ -1,6 +1,6 @@
 'use strict'
 
-let addChatButton = document.getElementById('addChatButton');
+let addChatButtonOpen = document.getElementById('addChatButtonOpen');
 let addChatPopUp = document.getElementById('addChatPopUp');
 
 let chatsHeader = document.querySelector('.chats-header');
@@ -37,9 +37,7 @@ document.addEventListener('keydown', (event) => {
         toggleStyles();
 });
 
-addChatButton.addEventListener('click', toggleStyles);
-
-let chats = document.querySelectorAll('.chat');
+addChatButtonOpen.addEventListener('click', toggleStyles);
 
 let activeChat = document.getElementById('activeChat');
 let currentUser = document.getElementById('currentUser').innerHTML;
@@ -89,42 +87,73 @@ let showMessages = (data) => {
     });
 };
 
-chats.forEach((chat) => {
-    chat.addEventListener('click', () => {
-        let csrftoken = getCSRFToken();
+let reloadChats = () => {
+    let chats = document.querySelectorAll('.chat');
 
-        let xhr = new XMLHttpRequest();
+    chats.forEach((chat) => {
+        chat.addEventListener('click', () => {
+            let csrftoken = getCSRFToken();
 
-        xhr.open('POST', '/get_chat_messages', true);
+            let xhr = new XMLHttpRequest();
 
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.open('POST', '/get_chat_messages', true);
 
-        xhr.onload = () => {
-            if (xhr.status == 200) {
-                const response = JSON.parse(xhr.responseText);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-                showMessages(response);
+            xhr.onload = () => {
+                if (xhr.status == 200) {
+                    const response = JSON.parse(xhr.responseText);
+
+                    showMessages(response);
+                }
+
+                else if (xhr.status == 404)
+                    window.location.reload();
+            };
+
+            const data = JSON.stringify({'id': chat.id});
+
+            if (currentChatId != chat.id) {
+                currentChatId = chat.id;
+
+                xhr.send(data);
             }
-
-            else if (xhr.status == 404)
-                window.location.reload();
-        };
-
-        const data = JSON.stringify({'id': chat.id});
-
-        if (currentChatId != chat.id) {
-            currentChatId = chat.id;
-
-            xhr.send(data);
-
-            currentChatId = chat.id;
-        }
+        });
     });
-});
+};
+
+reloadChats();
+
+let allChats = document.getElementById('chats');
 
 let sendMessageButton = document.getElementById('sendMessageButton');
 let messageText = document.getElementById('messageText');
+
+let addChat = (data) => {
+    let chatDiv = document.createElement('div');
+
+    chatDiv.classList.add('chat')
+    chatDiv.id = data['id'];
+
+    let chatImg = document.createElement('div');
+
+    chatImg.classList.add('chat-img');
+
+    let chatLabel = document.createElement('h2');
+
+    chatLabel.classList.add('chat-name');
+    chatLabel.innerHTML = data['name'];
+
+    chatDiv.appendChild(chatImg);
+    chatDiv.appendChild(chatLabel);
+
+    allChats.appendChild(chatDiv);
+
+    currentChatId = chatDiv.id;
+
+    reloadChats();
+};
 
 sendMessageButton.addEventListener('click', () => {
     let csrftoken = getCSRFToken();
@@ -138,7 +167,7 @@ sendMessageButton.addEventListener('click', () => {
 
     xhr.onload = () => {
         if (xhr.status == 200) {
-            const response = JSON.parse(xhr.responseText);            
+            const response = JSON.parse(xhr.responseText);
 
             showMessages(response);
         }
@@ -152,4 +181,37 @@ sendMessageButton.addEventListener('click', () => {
     xhr.send(data);
 
     messageText.value = '';
+});
+
+let addChatButton = document.getElementById('addChatButton');
+let usernameToAdd = document.getElementById('usernameToAdd');
+
+addChatButton.addEventListener('click', () => {
+    let csrftoken = getCSRFToken();
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('POST', '/create_new_chat', true);
+
+    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onload = () => {
+        if (xhr.status == 200) {
+            const response = JSON.parse(xhr.responseText);
+
+            addChat(response);
+
+            toggleStyles();
+        }
+
+        else if (xhr.status == 404)
+            window.location.reload();
+    };
+
+    const data = JSON.stringify({'username': usernameToAdd.value});
+
+    xhr.send(data);
+
+    usernameToAdd.value = '';
 });

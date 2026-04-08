@@ -85,35 +85,30 @@ def create_new_chat(request):
     user = request.user
 
     if request.method == 'POST' and user.is_authenticated:
-        form = AddChatForm(request.POST, user=user)
+        form = AddChatForm(loads(request.body), user=user)
 
         if form.is_valid():
             username = form.cleaned_data.get('username')
             other_user = User.objects.filter(username=username).first()
 
-            if other_user is not None:
-                new_chat = form.save(commit=False)
+            new_chat = form.save(commit=False)
 
-                new_chat.name = f'Чат {user.username} и {username}'
+            new_chat.name = f'Чат {user.username} и {username}'
 
-                new_chat.save()
+            new_chat.save()
 
-                new_chat.users.add(user)
-                new_chat.users.add(other_user)
+            new_chat.users.add(user)
+            new_chat.users.add(other_user)
+
+            user.current_chat = new_chat
+            user.save()
+
+            data = {'id': new_chat.id, 'name': new_chat.name}
+
+            return JsonResponse(data, safe=False)
 
         else:
-            chats = Chat.objects.filter(users=user).distinct()
-
-            messages = Message.objects.filter(chat=user.current_chat)
-
-            context = {
-                'send_message_form': SendMessageForm,
-                'add_chat_form': form,
-                'chats': chats,
-                'messages': messages
-            }
-
-            return render(request, 'index.html', context)
+            return JsonResponse({}, safe=False, status=400)
 
     return redirect('index')
 

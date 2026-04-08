@@ -16,8 +16,13 @@ def index(request):
 
         messages = Message.objects.filter(chat=user.current_chat)
 
+        current_chat_id = None
+
+        if user.current_chat:
+            current_chat_id = user.current_chat.id
+
         context = {
-            'send_message_form': SendMessageForm(current_chat_id=user.current_chat.id),
+            'send_message_form': SendMessageForm(current_chat_id=current_chat_id),
             'add_chat_form': AddChatForm,
             'chats': chats,
             'messages': messages
@@ -96,19 +101,19 @@ def create_new_chat(request):
                 new_chat.users.add(user)
                 new_chat.users.add(other_user)
 
-        # else:
-        #     chats = Chat.objects.filter(users=user).distinct()
+        else:
+            chats = Chat.objects.filter(users=user).distinct()
 
-        #     messages = Message.objects.filter(chat=user.current_chat)
+            messages = Message.objects.filter(chat=user.current_chat)
 
-        #     context = {
-        #         'send_message_form': SendMessageForm,
-        #         'add_chat_form': form,
-        #         'chats': chats,
-        #         'messages': messages
-        #     }
+            context = {
+                'send_message_form': SendMessageForm,
+                'add_chat_form': form,
+                'chats': chats,
+                'messages': messages
+            }
 
-        #     return render(request, 'index.html', context)
+            return render(request, 'index.html', context)
 
     return redirect('index')
 
@@ -131,6 +136,9 @@ def get_chat_messages(request):
 
                 return JsonResponse(messages, safe=False)
 
+        else:
+            return JsonResponse({}, safe=False, status=404)
+
     return redirect('index')
 
 
@@ -138,7 +146,7 @@ def send_message(request):
     user = request.user
 
     if request.method == 'POST' and user.is_authenticated:
-        form = SendMessageForm(request.POST, current_chat_id=user.current_chat.id)
+        form = SendMessageForm(loads(request.body), current_chat_id=user.current_chat.id)
 
         if form.is_valid():
             id = form.cleaned_data.get('chat_id')
@@ -152,15 +160,11 @@ def send_message(request):
 
             new_message.save()
 
-        # else:
-        #     chats = Chat.objects.filter(users=user).distinct()
+            messages = list(Message.objects.filter(chat=user.current_chat).values('sender__username', 'text'))
 
-        #     context = {
-        #         'send_message_form': form,
-        #         'add_chat_form': AddChatForm,
-        #         'chats': chats
-        #     }
+            return JsonResponse(messages, safe=False)
 
-        #     return render(request, 'index.html', context)
+        else:
+            return JsonResponse({}, safe=False, status=404)
 
     return redirect('index')

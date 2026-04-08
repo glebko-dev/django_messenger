@@ -92,14 +92,11 @@
                 </div>
 
                 <footer class="chat-footer">
-                    <form class="message-form" method="POST" action="send_message">
-                        {% csrf_token %}
+                    <div class="message-form">
+                        <input type="text" class="message-input" placeholder="Введите сообщение" id="messageText">
 
-                        {{ send_message_form.chat_id }}
-                        {{ send_message_form.message }}
-
-                        <button type="submit" class="send-message-button">Отправить сообщение</button>
-                    </form>
+                        <button class="send-message-button" id="sendMessageButton">Отправить сообщение</button>
+                    </div>
                 </footer>
             </div>
         </div>

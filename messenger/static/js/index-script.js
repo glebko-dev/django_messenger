@@ -87,6 +87,19 @@ let showMessages = (data) => {
     });
 };
 
+let chatWebSocket = (id) => {
+    if (!currentChatId)
+        return;
+
+    let chatWebSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${id}/`);
+
+    chatWebSocket.onmessage = (event) => {
+        let messages = JSON.parse(event.data)['messages']
+
+        showMessages(messages);
+    };
+};
+
 let reloadChats = () => {
     let chats = document.querySelectorAll('.chat');
 
@@ -119,11 +132,14 @@ let reloadChats = () => {
 
                 xhr.send(data);
             }
+
+            chatWebSocket(chat.id);
         });
     });
 };
 
 reloadChats();
+chatWebSocket(currentChatId);
 
 let allChats = document.getElementById('chats');
 
@@ -164,17 +180,6 @@ sendMessageButton.addEventListener('click', () => {
 
     xhr.setRequestHeader("X-CSRFToken", csrftoken);
     xhr.setRequestHeader("Content-Type", "application/json");
-
-    xhr.onload = () => {
-        if (xhr.status == 200) {
-            const response = JSON.parse(xhr.responseText);
-
-            showMessages(response);
-        }
-
-        else if (xhr.status == 404)
-            window.location.reload();
-    };
 
     const data = JSON.stringify({'chat_id': currentChatId, 'message': messageText.value});
 

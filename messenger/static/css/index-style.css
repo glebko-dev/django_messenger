@@ -353,3 +353,43 @@ body {
     top: -10px;
     left: 10px;
 }
+
+.files-input {
+    color: white;
+
+    outline: 0;
+}
+
+.files-input::file-selector-button {
+    min-width: 20%;
+    height: 44px;
+
+    background-color: white;
+
+    border: 0;
+
+    border-radius: 5px;
+
+    outline: 0;
+
+    font-size: 17px;
+
+    transition: 0.5s;
+}
+
+.files-input::file-selector-button:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+
+.file-link {
+    color: white;
+
+    transition: 0.5s;
+
+    outline: 0;
+}
+
+.file-link:hover {
+    color: lightgray;
+}

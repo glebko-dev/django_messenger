@@ -4,7 +4,7 @@ from json import dumps
 
 from asgiref.sync import sync_to_async
 
-from messenger.models import Message, Chat
+from messenger.models import Message, Chat, Media
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -34,8 +34,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
         messages = Message.objects.filter(chat=chat)
 
         messages_list = await sync_to_async(list)(
-            messages.values('sender__username', 'text')
+            messages.values('id', 'sender__username', 'text')
         )
+
+        media_list = await sync_to_async(list)(
+            messages.values('id', 'media__id')
+        )
+
+        for i in range(len(messages_list)):
+            media_ids = []
+
+            for j in range(len(media_list)):
+                if media_list[j]['id'] == media_list[i]['id']:
+                    media_ids.append(media_list[j]['media__id'])
+
+            if media_ids == [None]:
+                media_ids = []
+
+            messages_list[i]['media'] = media_ids
 
         await self.send(text_data=dumps({
             'messages': messages_list

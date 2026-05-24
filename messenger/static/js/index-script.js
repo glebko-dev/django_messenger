@@ -58,7 +58,31 @@ let showMessages = (data) => {
 
         messageWrapperEl.appendChild(messageEl);
 
-        messageEl.innerHTML = text;
+        let messageTextEl = document.createElement('div');
+        
+        messageTextEl.innerHTML = text;
+        messageTextEl.classList.add('message-text');
+
+        messageEl.appendChild(messageTextEl);
+
+        let filesEl = document.createElement('div');
+
+        filesEl.classList.add('files');
+
+
+        for (let i = 0; i < message['media'].length; i++) {
+            let fileLink = document.createElement('a');
+
+            fileLink.innerHTML = `Скачать файл ${message['media'][i]}`;
+
+            fileLink.classList.add('file-link');
+            fileLink.href = `files/${message['media'][i]}`;
+
+            filesEl.appendChild(fileLink);
+            filesEl.appendChild(document.createElement('br'));
+        }
+
+        messageEl.appendChild(filesEl);
 
         if (currentUser == sender) {
             messageWrapperEl.classList.add('my-message-wrapper');
@@ -137,7 +161,9 @@ let getCSRFToken = () => {
 let allChats = document.getElementById('chats');
 
 let sendMessageButton = document.getElementById('sendMessageButton');
+
 let messageText = document.getElementById('messageText');
+let filesInput = document.getElementById('filesInput');
 
 allChats.addEventListener('click', (event) => {
     const chat = event.target.closest('.chat');
@@ -236,11 +262,16 @@ sendMessageButton.addEventListener('click', () => {
     xhr.open('POST', '/send_message', true);
 
     xhr.setRequestHeader("X-CSRFToken", csrftoken);
-    xhr.setRequestHeader("Content-Type", "application/json");
 
-    const data = JSON.stringify({'chat_id': currentChatId, 'message': messageText.value});
+    let formData = new FormData();
 
-    xhr.send(data);
+    formData.append('chat_id', currentChatId);
+    formData.append('message', messageText.value);
+
+    for (let i = 0; i < filesInput.files.length; i++)
+        formData.append('files', filesInput.files[i]);
+
+    xhr.send(formData);
 
     messageText.value = '';
 });

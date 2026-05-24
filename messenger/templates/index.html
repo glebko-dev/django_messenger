@@ -57,11 +57,27 @@
                     {% for message in messages %}
                         {% if message.sender == user %}
                             <div class="my-message-wrapper">
-                                <div class="my-message">{{ message.text|safe }}</div>
+                                <div class="my-message">
+                                    <div class="message-text">{{ message.text|safe }}</div>
+
+                                    <div class="files">
+                                        {% for file in message.media.all %}
+                                            <a href="files/{{ file.id }}" class="file-link">Скачать файл {{ file.file.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
                         {% else %}
                             <div class="other-message-wrapper">
-                                <div class="other-message">{{ message.text|safe }}</div>
+                                <div class="other-message">
+                                    <div class="message-text">{{ message.text|safe }}</div>
+
+                                    <div class="files">
+                                        {% for file in message.media.all %}
+                                            <a href="files/{{ file.id }}" class="file-link">Скачать файл {{ file.file.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -70,6 +86,8 @@
                 <footer class="chat-footer">
                     <div class="message-form">
                         <input type="text" class="message-input" placeholder="Введите сообщение" id="messageText">
+
+                        <input type="file" class="files-input" id="filesInput" multiple>
 
                         <button class="send-message-button" id="sendMessageButton">Отправить сообщение</button>
                     </div>

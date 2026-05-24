@@ -1,4 +1,4 @@
-from django.db.models import Model, ManyToManyField, CharField, ForeignKey, EmailField, CASCADE, SET_NULL
+from django.db.models import Model, ManyToManyField, CharField, ForeignKey, EmailField, FileField, CASCADE, SET_NULL
 from django.contrib.auth.models import AbstractUser
 
 
@@ -14,9 +14,17 @@ class Chat(Model):
     users = ManyToManyField('User')
 
 
+class Media(Model):
+    file = FileField(max_length=500)
+
+    filename = CharField(max_length=500, default='')
+
+
 class Message(Model):
     sender = ForeignKey(User, on_delete=CASCADE)
 
     text = CharField(max_length=1000, default='')
 
     chat = ForeignKey(Chat, on_delete=CASCADE)
+
+    media = ManyToManyField(Media)

@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 
 from messenger.forms import SignUpForm, SignInForm, SendMessageForm, AddChatForm
-from messenger.models import User, Chat, Message
+from messenger.models import User, Chat, Message, Media
 
 from json import loads
 
@@ -126,7 +126,7 @@ def get_chat_messages(request):
 
         if chat and user.is_authenticated:
             if user in chat.users.all():
-                messages = list(Message.objects.filter(chat=chat).values('sender__username', 'text'))
+                messages = list(Message.objects.filter(chat=chat).values('sender__username', 'text', 'media'))
 
                 return JsonResponse(messages, safe=False)
 
@@ -140,11 +140,13 @@ def send_message(request):
     user = request.user
 
     if request.method == 'POST' and user.is_authenticated:
-        form = SendMessageForm(loads(request.body), current_chat_id=user.current_chat.id)
+        form = SendMessageForm(request.POST, files=request.FILES, current_chat_id=user.current_chat.id)
 
         if form.is_valid():
             id = form.cleaned_data.get('chat_id')
             chat = Chat.objects.filter(id=id).first()
+
+            uploaded_files = form.files.getlist('files')
 
             new_message = form.save(commit=False)
 
@@ -154,6 +156,11 @@ def send_message(request):
 
             new_message.save()
 
+            for file in uploaded_files:
+                media = Media.objects.create(file=file, filename=file.name)
+
+                new_message.media.add(media)
+
             messages = list(Message.objects.filter(chat=user.current_chat).values('sender__username', 'text'))
 
             return JsonResponse(messages, safe=False)
@@ -162,3 +169,10 @@ def send_message(request):
             return JsonResponse({}, safe=False, status=404)
 
     return redirect('index')
+
+
+def download_file(request, id):
+    media_file = Media.objects.get(id=id).file
+    file, filename = media_file.open('rb'), media_file.name
+
+    return FileResponse(file, as_attachment=True, filename=filename)

@@ -21,6 +21,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
 
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+
     async def chat_message(self, event):
         chat = await Chat.objects.filter(id=self.chat_id).afirst()
 
@@ -32,4 +39,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.send(text_data=dumps({
             'messages': messages_list
+        }))
+
+
+class NewChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.user = self.scope['user']
+
+        self.room_group_name = f'{self.user.username}_new_chat_group'
+
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+
+    async def new_chat_message(self, event):
+        chats = Chat.objects.filter(users=self.user)
+
+        chats_list = await sync_to_async(list)(
+            chats.values('name', 'id')
+        )
+
+        await self.send(text_data=dumps({
+            'chats': chats_list
         }))

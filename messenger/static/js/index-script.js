@@ -40,24 +40,11 @@ document.addEventListener('keydown', (event) => {
 addChatButtonOpen.addEventListener('click', toggleStyles);
 
 let activeChat = document.getElementById('activeChat');
+let chatName = document.getElementById('chatName');
+
 let currentUser = document.getElementById('currentUser').innerHTML;
 
 let currentChatId = JSON.parse(document.getElementById('userCurrentChat').textContent).toString();
-
-let getCSRFToken = () => {
-    let csrftoken;
-    const cookieParsed = document.cookie.split("; ");
-
-    for (let i = 0; i < cookieParsed.length; i++) {
-        if (cookieParsed[i].includes("csrftoken")) {
-            csrftoken = cookieParsed[i].slice(10);
-
-            break;
-        }
-    }
-
-    return csrftoken;
-};
 
 let showMessages = (data) => {
     activeChat.innerHTML = '';
@@ -87,64 +74,122 @@ let showMessages = (data) => {
     });
 };
 
-let chatWebSocket = (id) => {
-    if (!currentChatId)
-        return;
+let showChats = (data) => {
+    chats.innerHTML = '';
 
-    let chatWebSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${id}/`);
+    data.forEach((chat) => {
+        let chatName = chat['name'], chatId = chat['id'];
 
-    chatWebSocket.onmessage = (event) => {
-        let messages = JSON.parse(event.data)['messages']
+        let chatDiv = document.createElement('div');
 
-        showMessages(messages);
-    };
-};
+        chatDiv.classList.add('chat');
+        chatDiv.id = chatId;
 
-let reloadChats = () => {
-    let chats = document.querySelectorAll('.chat');
+        let chatImgDiv = document.createElement('div');
 
-    chats.forEach((chat) => {
-        chat.addEventListener('click', () => {
-            let csrftoken = getCSRFToken();
+        chatImgDiv.classList.add('chat-img');
 
-            let xhr = new XMLHttpRequest();
+        let chatHeader = document.createElement('h2');
 
-            xhr.open('POST', '/get_chat_messages', true);
+        chatHeader.classList.add('chat-name');
+        chatHeader.innerHTML = chatName;
 
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            xhr.setRequestHeader("Content-Type", "application/json");
+        chatDiv.appendChild(chatImgDiv);
+        chatDiv.appendChild(chatHeader);
 
-            xhr.onload = () => {
-                if (xhr.status == 200) {
-                    const response = JSON.parse(xhr.responseText);
-
-                    showMessages(response);
-                }
-
-                else if (xhr.status == 404)
-                    window.location.reload();
-            };
-
-            const data = JSON.stringify({'id': chat.id});
-
-            if (currentChatId != chat.id) {
-                currentChatId = chat.id;
-
-                xhr.send(data);
-            }
-
-            chatWebSocket(chat.id);
-        });
+        chats.appendChild(chatDiv);
     });
 };
 
-reloadChats();
-chatWebSocket(currentChatId);
+let chatWebSocket = null, newChatsWebSocket = new WebSocket(`ws://${window.location.host}/ws/chats/`);
+
+if (currentChatId) {
+    let chatWebSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${currentChatId}/`);
+
+    chatWebSocket.onmessage = (event) => {
+        let messages = JSON.parse(event.data)['messages'];
+    
+        showMessages(messages);
+    };
+}
+
+newChatsWebSocket.onmessage = (event) => {
+    let chats = JSON.parse(event.data)['chats'];
+
+    showChats(chats);
+};
+
+let getCSRFToken = () => {
+    let csrftoken = '';
+    const cookieParsed = document.cookie.split("; ");
+
+    for (let i = 0; i < cookieParsed.length; i++) {
+        if (cookieParsed[i].includes("csrftoken")) {
+            csrftoken = cookieParsed[i].slice(10);
+
+            break;
+        }
+    }
+
+    return csrftoken;
+};
 
 let allChats = document.getElementById('chats');
 
 let sendMessageButton = document.getElementById('sendMessageButton');
 let messageText = document.getElementById('messageText');
+
+allChats.addEventListener('click', (event) => {
+    const chat = event.target.closest('.chat');
+
+    if (!chat)
+        return;
+
+    const clickedChatId = chat.id;
+
+    if (currentChatId !== clickedChatId) {
+        currentChatId = clickedChatId;
+
+        chatName.innerHTML = chat.querySelector('.chat-name').innerHTML;
+
+        let csrftoken = getCSRFToken();
+
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/get_chat_messages', true);
+
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+                const response = JSON.parse(xhr.responseText);
+
+                showMessages(response);
+            }
+
+            else if (xhr.status == 404)
+                window.location.reload();
+        };
+
+        const data = JSON.stringify({'id': chat.id});
+
+        currentChatId = chat.id;
+
+        xhr.send(data);
+
+        if (chatWebSocket !== null)
+            chatWebSocket.close();
+
+        chatWebSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${chat.id}/`);
+
+        chatWebSocket.onmessage = (event) => {
+            let messages = JSON.parse(event.data)['messages'];
+
+            showMessages(messages);
+        };
+    }
+});
 
 let addChat = (data) => {
     let chatDiv = document.createElement('div');
@@ -168,7 +213,19 @@ let addChat = (data) => {
 
     currentChatId = chatDiv.id;
 
-    reloadChats();
+    chatName.innerHTML = data['name'];
+    activeChat.innerHTML = '';
+
+    if (chatWebSocket !== null)
+        chatWebSocket.close();
+
+    chatWebSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${data['id']}/`);
+
+    chatWebSocket.onmessage = (event) => {
+        let messages = JSON.parse(event.data)['messages'];
+
+        showMessages(messages);
+    };
 };
 
 sendMessageButton.addEventListener('click', () => {

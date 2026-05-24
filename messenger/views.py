@@ -97,8 +97,7 @@ def create_new_chat(request):
 
             new_chat.save()
 
-            new_chat.users.add(user)
-            new_chat.users.add(other_user)
+            new_chat.users.add(user, other_user)
 
             user.current_chat = new_chat
             user.save()

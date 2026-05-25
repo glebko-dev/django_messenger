@@ -10,7 +10,7 @@ from messenger.models import Message, Chat
 
 @receiver(post_save, sender=Message)
 def message_notify(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.media.exists() is False:
         channel_layer = get_channel_layer()
 
         chat = instance.chat
@@ -18,9 +18,22 @@ def message_notify(sender, instance, created, **kwargs):
         async_to_sync(channel_layer.group_send)(
             f'{chat.id}_chat_group',
             {
-                'type': 'chat_message',
-                'message': instance.text,
-                'sender': instance.sender.username
+                'type': 'chat_message'
+            }
+        )
+
+
+@receiver(m2m_changed, sender=Message.media.through)
+def message_media_notify(sender, instance, action, reverse, **kwargs):
+    if action == 'post_add' and not reverse:
+        channel_layer = get_channel_layer()
+
+        chat = instance.chat
+
+        async_to_sync(channel_layer.group_send)(
+            f'{chat.id}_chat_group',
+            {
+                'type': 'chat_message'
             }
         )
 

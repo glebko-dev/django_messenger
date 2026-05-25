@@ -17,8 +17,6 @@ class Chat(Model):
 class Media(Model):
     file = FileField(max_length=500)
 
-    filename = CharField(max_length=500, default='')
-
 
 class Message(Model):
     sender = ForeignKey(User, on_delete=CASCADE)

@@ -4,7 +4,30 @@ from json import dumps
 
 from asgiref.sync import sync_to_async
 
-from messenger.models import Message, Chat, Media
+from messenger.models import Message, Chat
+
+from channels.db import database_sync_to_async
+
+
+@database_sync_to_async
+def get_chat_messages(chat_id):
+    chat = Chat.objects.filter(id=chat_id).first()
+
+    messages = Message.objects.filter(chat=chat).prefetch_related('media')
+
+    messages_list = []
+
+    for message in messages:
+        media = {msg.id: msg.file.name for msg in message.media.all() if msg.file}
+
+        messages_list.append({
+            'id': message.id,
+            'sender__username': message.sender.username if message.sender else None,
+            'text': message.text,
+            'media': media if media else None
+        })
+
+    return messages_list
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -29,29 +52,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 
     async def chat_message(self, event):
-        chat = await Chat.objects.filter(id=self.chat_id).afirst()
-
-        messages = Message.objects.filter(chat=chat)
-
-        messages_list = await sync_to_async(list)(
-            messages.values('id', 'sender__username', 'text')
-        )
-
-        media_list = await sync_to_async(list)(
-            messages.values('id', 'media__id')
-        )
-
-        for i in range(len(messages_list)):
-            media_ids = []
-
-            for j in range(len(media_list)):
-                if media_list[j]['id'] == media_list[i]['id']:
-                    media_ids.append(media_list[j]['media__id'])
-
-            if media_ids == [None]:
-                media_ids = []
-
-            messages_list[i]['media'] = media_ids
+        messages_list = await get_chat_messages(self.chat_id)
 
         await self.send(text_data=dumps({
             'messages': messages_list

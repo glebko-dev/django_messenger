@@ -126,9 +126,21 @@ def get_chat_messages(request):
 
         if chat and user.is_authenticated:
             if user in chat.users.all():
-                messages = list(Message.objects.filter(chat=chat).values('sender__username', 'text', 'media'))
+                messages = Message.objects.filter(chat=chat).prefetch_related('media')
 
-                return JsonResponse(messages, safe=False)
+                messages_list = []
+
+                for message in messages:
+                    media = {msg.id: msg.file.name for msg in message.media.all() if msg.file}
+
+                    messages_list.append({
+                        'id': message.id,
+                        'sender__username': message.sender.username if message.sender else None,
+                        'text': message.text,
+                        'media': media if media else None
+                    })
+
+                return JsonResponse(messages_list, safe=False)
 
         else:
             return JsonResponse({}, safe=False, status=404)
@@ -156,17 +168,16 @@ def send_message(request):
 
             new_message.save()
 
-            for file in uploaded_files:
-                media = Media.objects.create(file=file, filename=file.name)
+            media_instances = [Media.objects.create(file=file) for file in uploaded_files]
 
-                new_message.media.add(media)
+            if media_instances:
+                new_message.media.add(*media_instances)
 
             messages = list(Message.objects.filter(chat=user.current_chat).values('sender__username', 'text'))
 
             return JsonResponse(messages, safe=False)
 
-        else:
-            return JsonResponse({}, safe=False, status=404)
+        return JsonResponse({}, safe=False, status=404)
 
     return redirect('index')
 

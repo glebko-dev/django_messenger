@@ -59,30 +59,35 @@ let showMessages = (data) => {
         messageWrapperEl.appendChild(messageEl);
 
         let messageTextEl = document.createElement('div');
-        
+
         messageTextEl.innerHTML = text;
         messageTextEl.classList.add('message-text');
 
         messageEl.appendChild(messageTextEl);
 
-        let filesEl = document.createElement('div');
+        if (message['media'] != null && Object.keys(message['media']).length > 0) {
+            let filesEl = document.createElement('div');
+            
+            let keys = Object.keys(message['media']);
+            
+            filesEl.classList.add('files');
 
-        filesEl.classList.add('files');
+            for (let i = 0; i < keys.length; i++) {
+                let fileLink = document.createElement('a');
 
+                fileLink.innerHTML = `Скачать файл ${message['media'][keys[i]]}`;
+    
+                fileLink.classList.add('file-link');
 
-        for (let i = 0; i < message['media'].length; i++) {
-            let fileLink = document.createElement('a');
+                fileLink.href = `files/${message['media'][keys[i]]}`;
+    
+                filesEl.appendChild(fileLink);
+                filesEl.appendChild(document.createElement('br'));
+            }
 
-            fileLink.innerHTML = `Скачать файл ${message['media'][i]}`;
-
-            fileLink.classList.add('file-link');
-            fileLink.href = `files/${message['media'][i]}`;
-
-            filesEl.appendChild(fileLink);
-            filesEl.appendChild(document.createElement('br'));
+            messageEl.appendChild(filesEl);
         }
 
-        messageEl.appendChild(filesEl);
 
         if (currentUser == sender) {
             messageWrapperEl.classList.add('my-message-wrapper');
@@ -274,6 +279,7 @@ sendMessageButton.addEventListener('click', () => {
     xhr.send(formData);
 
     messageText.value = '';
+    filesInput.value = '';
 });
 
 let addChatButton = document.getElementById('addChatButton');

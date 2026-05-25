@@ -63,6 +63,7 @@
                                     <div class="files">
                                         {% for file in message.media.all %}
                                             <a href="files/{{ file.id }}" class="file-link">Скачать файл {{ file.file.name }}</a>
+                                            <br>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -75,6 +76,7 @@
                                     <div class="files">
                                         {% for file in message.media.all %}
                                             <a href="files/{{ file.id }}" class="file-link">Скачать файл {{ file.file.name }}</a>
+                                            <br>
                                         {% endfor %}
                                     </div>
                                 </div>
